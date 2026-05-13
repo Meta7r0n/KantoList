@@ -4084,59 +4084,161 @@ var Dex = (function(){
     return false;
   }
 
+
+  function firstAppearanceByNum(num){
+    var n = parseInt(num, 10);
+    if(n <= 151) return "Pokémon Red / Green / Blue / Yellow";
+    if(n <= 251) return "Pokémon Gold / Silver / Crystal";
+    if(n <= 386) return "Pokémon Ruby / Sapphire / Emerald";
+    if(n <= 493) return "Pokémon Diamond / Pearl / Platinum";
+    if(n <= 649) return "Pokémon Black / White / Black 2 / White 2";
+    if(n <= 721) return "Pokémon X / Y";
+    if(n <= 809) return "Pokémon Sun / Moon / Ultra Sun / Ultra Moon";
+    if(n <= 898) return "Pokémon Sword / Shield";
+    if(n <= 905) return "Pokémon Legends: Arceus";
+    return "Pokémon Scarlet / Violet";
+  }
+
+  function starterProfessorByNum(num){
+    var starterMap = {
+      "001":"Professor Oak", "004":"Professor Oak", "007":"Professor Oak",
+      "152":"Professor Elm", "155":"Professor Elm", "158":"Professor Elm",
+      "252":"Professor Birch", "255":"Professor Birch", "258":"Professor Birch",
+      "387":"Professor Rowan", "390":"Professor Rowan", "393":"Professor Rowan",
+      "495":"Professor Juniper", "498":"Professor Juniper", "501":"Professor Juniper",
+      "650":"Professor Sycamore", "653":"Professor Sycamore", "656":"Professor Sycamore",
+      "722":"Professor Kukui", "725":"Professor Kukui", "728":"Professor Kukui",
+      "810":"Professor Magnolia / Leon", "813":"Professor Magnolia / Leon", "816":"Professor Magnolia / Leon",
+      "906":"Director Clavell", "909":"Director Clavell", "912":"Director Clavell"
+    };
+    return starterMap[num] || "";
+  }
+
+  function fetchJsonSafe(url){
+    url = String(url || "").replace("http://", "https://");
+    if(url.charAt(url.length - 1) !== "/") url += "/";
+    return fetch(url).then(function(response){
+      if(!response.ok) throw new Error("HTTP " + response.status + " for " + url);
+      return response.json();
+    });
+  }
+
+  function renderPokemonFallback(num, fallbackName, regionName, message){
+    var firstGame = firstAppearanceByNum(num);
+    var professor = starterProfessorByNum(num);
+    var starterLine = professor
+      ? '<div><strong>First partner note:</strong> Offered as a first partner by ' + professor + '.</div>'
+      : '<div><strong>First partner note:</strong> Not listed as a regional first partner in this app.</div>';
+
+    id("pokemonDrawerTitle").textContent = "#" + num + " " + fallbackName;
+    id("pokemonDrawerSub").textContent = regionName + " region";
+
+    id("pokemonDrawerBody").innerHTML =
+      '<div class="pokemon-sprite-card">' +
+        '<div style="width:96px;height:96px;display:grid;place-items:center;background:rgba(255,255,255,.06);border-radius:16px;font-weight:900;color:#cbd5e1">#' + num + '</div>' +
+        '<div class="pokemon-id-stack">' +
+          '<strong>#' + num + ' ' + fallbackName + '</strong>' +
+          '<div style="color:#cbd5e1;font-size:.86rem">' + regionName + ' region</div>' +
+        '</div>' +
+      '</div>' +
+      '<section class="detail-section"><h3>Basic Card</h3><p>' + (message || 'Live Pokédex data is loading or unavailable. Basic local details are shown.') + '</p></section>' +
+      '<section class="detail-section"><h3>Core Details</h3><div class="detail-grid">' +
+        '<div><strong>Region group:</strong> ' + regionName + '</div>' +
+        '<div><strong>First appeared:</strong> ' + firstGame + '</div>' +
+        starterLine +
+      '</div></section>' +
+      '<section class="detail-section"><h3>Evolution Line</h3><p>Live PokéAPI data is needed for the full evolution line.</p></section>' +
+      '<section class="detail-section"><h3>Wild / Encounter Clues</h3><p>Live PokéAPI data is needed for encounter details. Some Pokémon are starters, gifts, fossils, legendary/mythical encounters, events, raids, transfers, or DLC encounters.</p></section>';
+  }
+
   function loadPokemonDetails(num, fallbackName, regionName){
     if(!num){
       id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Could not identify this Pokémon number.</p>';
       return;
     }
 
+    renderPokemonFallback(num, fallbackName, regionName, "Loading live Pokédex data…");
+
     if(pokemonCache && pokemonCache[num]){
       renderPokemonDetails(num, fallbackName, regionName, pokemonCache[num]);
       return;
     }
 
-    Promise.all([
-      fetch("https://pokeapi.co/api/v2/pokemon/" + parseInt(num,10)).then(function(r){ return r.json(); }),
-      fetch("https://pokeapi.co/api/v2/pokemon-species/" + parseInt(num,10)).then(function(r){ return r.json(); }),
-      fetch("https://pokeapi.co/api/v2/pokemon/" + parseInt(num,10) + "/encounters").then(function(r){ return r.json(); }).catch(function(){ return []; })
-    ]).then(function(results){
-      var poke = results[0];
-      var species = results[1];
-      var encounters = results[2] || [];
-      return fetch(species.evolution_chain.url).then(function(r){ return r.json(); }).then(function(evo){
+    var numericId = parseInt(num, 10);
+    var pokemonUrl = "https://pokeapi.co/api/v2/pokemon/" + numericId + "/";
+    var speciesUrl = "https://pokeapi.co/api/v2/pokemon-species/" + numericId + "/";
+    var encounterUrl = "https://pokeapi.co/api/v2/pokemon/" + numericId + "/encounters/";
+
+    var pokeResult = fetchJsonSafe(pokemonUrl).then(function(data){ return {ok:true, data:data}; }).catch(function(err){ return {ok:false, error:err.message}; });
+    var speciesResult = fetchJsonSafe(speciesUrl).then(function(data){ return {ok:true, data:data}; }).catch(function(err){ return {ok:false, error:err.message}; });
+    var encounterResult = fetchJsonSafe(encounterUrl).then(function(data){ return {ok:true, data:data}; }).catch(function(err){ return {ok:true, data:[]}; });
+
+    Promise.all([pokeResult, speciesResult, encounterResult]).then(function(results){
+      var pokeRes = results[0];
+      var speciesRes = results[1];
+      var encounterRes = results[2];
+
+      if(!pokeRes.ok && !speciesRes.ok){
+        renderPokemonFallback(num, fallbackName, regionName, "Could not reach PokéAPI from this browser/session. Basic local details are shown instead.");
+        status("Pokémon detail API unavailable.");
+        return;
+      }
+
+      var poke = pokeRes.ok ? pokeRes.data : null;
+      var species = speciesRes.ok ? speciesRes.data : null;
+      var encounters = encounterRes.ok ? encounterRes.data : [];
+
+      if(species && species.evolution_chain && species.evolution_chain.url){
+        fetchJsonSafe(species.evolution_chain.url).then(function(evo){
+          if(!pokemonCache) pokemonCache = {};
+          pokemonCache[num] = {pokemon:poke, species:species, encounters:encounters, evolution:evo};
+          renderPokemonDetails(num, fallbackName, regionName, pokemonCache[num]);
+        }).catch(function(err){
+          if(!pokemonCache) pokemonCache = {};
+          pokemonCache[num] = {pokemon:poke, species:species, encounters:encounters, evolution:null, evoError:err.message};
+          renderPokemonDetails(num, fallbackName, regionName, pokemonCache[num]);
+        });
+      } else {
         if(!pokemonCache) pokemonCache = {};
-        pokemonCache[num] = {pokemon:poke, species:species, encounters:encounters, evolution:evo};
+        pokemonCache[num] = {pokemon:poke, species:species, encounters:encounters, evolution:null};
         renderPokemonDetails(num, fallbackName, regionName, pokemonCache[num]);
-      });
+      }
     }).catch(function(err){
-      if(id("pokemonDrawerBody")) id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Could not load live Pokédex data. Check connection and try again.</p>';
-      status("Pokémon detail load failed.");
+      renderPokemonFallback(num, fallbackName, regionName, "Live data failed to load. Basic local details are shown instead.");
+      status("Pokémon detail load failed: " + err.message);
     });
   }
 
   function renderPokemonDetails(num, fallbackName, regionName, data){
-    var poke = data.pokemon;
-    var species = data.species;
+    var poke = data.pokemon || {};
+    var species = data.species || {};
     var evo = data.evolution;
     var encounters = data.encounters || [];
 
     var englishNameEntry = (species.names || []).filter(function(n){ return n.language && n.language.name === "en"; })[0];
-    var displayName = prettyName((englishNameEntry && englishNameEntry.name) || fallbackName || poke.name);
+    var displayName = prettyName((englishNameEntry && englishNameEntry.name) || fallbackName || poke.name || ("#" + num));
     var types = (poke.types || []).map(function(t){ return t.type.name; });
     var genusEntry = (species.genera || []).filter(function(g){ return g.language && g.language.name === "en"; })[0];
     var genus = genusEntry ? genusEntry.genus : "Pokémon";
-    var flavor = firstEnglishFlavor(species);
+    var flavor = species.flavor_text_entries ? firstEnglishFlavor(species) : "No live Pokédex blurb loaded.";
     var sprite = poke.sprites && (poke.sprites.front_default || (poke.sprites.other && poke.sprites.other["official-artwork"] && poke.sprites.other["official-artwork"].front_default));
-    var evoPaths = flattenEvolution(evo.chain);
+    var evoPaths = evo && evo.chain ? flattenEvolution(evo.chain) : null;
+    var firstGame = firstAppearanceByNum(num);
+    var professor = starterProfessorByNum(num);
+    var starterLine = professor
+      ? '<div><strong>First partner note:</strong> Offered as a first partner by ' + professor + '.</div>'
+      : '<div><strong>First partner note:</strong> Not listed as a regional first partner in this app.</div>';
 
-    var typeChips = types.map(function(t){ return '<span class="poke-chip type-' + t + '">' + label(t) + '</span>'; }).join("");
+    var typeChips = types.length
+      ? types.map(function(t){ return '<span class="poke-chip type-' + t + '">' + label(t) + '</span>'; }).join("")
+      : '<span style="color:#cbd5e1;font-size:.86rem">Type data unavailable</span>';
 
     id("pokemonDrawerTitle").textContent = "#" + num + " " + displayName;
     id("pokemonDrawerSub").textContent = regionName + " · " + genus;
 
     id("pokemonDrawerBody").innerHTML =
       '<div class="pokemon-sprite-card">' +
-        (sprite ? '<img src="' + sprite + '" alt="' + displayName + ' sprite">' : '<div style="width:96px;height:96px"></div>') +
+        (sprite ? '<img src="' + sprite + '" alt="' + displayName + ' sprite">' : '<div style="width:96px;height:96px;display:grid;place-items:center;background:rgba(255,255,255,.06);border-radius:16px;font-weight:900;color:#cbd5e1">#' + num + '</div>') +
         '<div class="pokemon-id-stack">' +
           '<strong>#' + num + ' ' + displayName + '</strong>' +
           '<div class="poke-chip-row">' + typeChips + '</div>' +
@@ -4145,13 +4247,17 @@ var Dex = (function(){
       '</div>' +
       '<section class="detail-section"><h3>Pokédex Blurb</h3><p>' + flavor + '</p></section>' +
       '<section class="detail-section"><h3>Core Details</h3><div class="detail-grid">' +
-        '<div><strong>Type:</strong> ' + types.map(label).join(" / ") + '</div>' +
+        '<div><strong>Type:</strong> ' + (types.length ? types.map(label).join(" / ") : "unavailable") + '</div>' +
         '<div><strong>Region group:</strong> ' + regionName + '</div>' +
+        '<div><strong>First appeared:</strong> ' + firstGame + '</div>' +
+        starterLine +
         '<div><strong>Base experience:</strong> ' + (poke.base_experience || "unknown") + '</div>' +
         '<div><strong>Capture rate:</strong> ' + (species.capture_rate != null ? species.capture_rate : "unknown") + '</div>' +
       '</div></section>' +
-      '<section class="detail-section"><h3>Evolution Line</h3>' + evoHtml(evoPaths) + '</section>' +
+      '<section class="detail-section"><h3>Evolution Line</h3>' + (evoPaths ? evoHtml(evoPaths) : '<p>Evolution data unavailable.</p>') + '</section>' +
       '<section class="detail-section"><h3>Wild / Encounter Clues</h3>' + formatEncounterAreas(encounters) + '</section>';
+
+    status("Loaded details for #" + num + " " + displayName + ".");
   }
 
   function init(){
