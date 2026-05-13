@@ -112,7 +112,8 @@ input[type=checkbox]{width:25px;height:25px;accent-color:#16a34a;flex:0 0 auto}
 .badge-title{font-weight:900}
 .share-badge{display:none;border-radius:999px;padding:7px 10px;background:#e5e7eb;color:#172554;font-weight:900}
 
-#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;background:#111827;color:white;border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 18px 45px rgba(0,0,0,.35);padding:13px 15px;max-width:min(420px,92vw);font-weight:850}
+#toast{display:none;position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#111827;color:white;border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 18px 45px rgba(0,0,0,.35);padding:13px 15px;max-width:min(420px,92vw);font-weight:850}
+#toast.show{display:block}
 #toast small{display:block;color:#cbd5e1;font-weight:700;margin-top:3px}
 
 .type-normal{background:#9ca3af}.type-fire{background:#ef4444}.type-water{background:#3b82f6}.type-electric{background:#eab308}.type-grass{background:#22c55e}.type-ice{background:#38bdf8}.type-fighting{background:#b91c1c}.type-poison{background:#a855f7}.type-ground{background:#b45309}.type-flying{background:#60a5fa}.type-psychic{background:#ec4899}.type-bug{background:#65a30d}.type-rock{background:#78716c}.type-ghost{background:#6d28d9}.type-dragon{background:#4338ca}.type-dark{background:#1f2937}.type-steel{background:#64748b}.type-fairy{background:#f472b6}
@@ -179,7 +180,107 @@ body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 .location-item strong{color:#fff}
 .location-item span{display:block;color:#cbd5e1;font-size:.8rem;margin-top:2px}
 .detail-note{color:#94a3b8!important;font-size:.8rem!important;margin-top:8px!important}
+
+/* Pokémon detail drawer hard override */
+.row button.pokemon-name{
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  border:0;
+  padding:0;
+  margin:0;
+  text-align:left;
+  color:#1f2937;
+  font:inherit;
+  cursor:pointer;
+  text-decoration:none;
+}
+.row button.pokemon-name:hover{text-decoration:underline;text-underline-offset:3px}
+.row.checked button.pokemon-name{color:#6b7280;text-decoration:line-through}
+body.pokemon-drawer-open{overflow:hidden}
+#pokemonDrawerOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:50}
+#pokemonDrawer{position:fixed;top:0;right:0;width:min(470px,95vw);height:100vh;background:#0f172a;color:white;z-index:51;transform:translateX(105%);transition:transform .22s ease;box-shadow:-16px 0 45px rgba(0,0,0,.35);display:flex;flex-direction:column}
+body.pokemon-drawer-open #pokemonDrawerOverlay{display:block}
+body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
+.pokemon-head{padding:max(18px,env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg,#1e293b,#111827)}
+.pokemon-head-row{display:flex;align-items:flex-start;gap:10px}
+.pokemon-title-wrap{flex:1}
+#pokemonDrawerTitle{margin:0;font-size:1.38rem;letter-spacing:-.03em;color:white}
+#pokemonDrawerSub{margin:5px 0 0;color:#cbd5e1;font-size:.9rem}
+.pokemon-close{border:0;border-radius:999px;background:#e5e7eb;color:#172554;font-weight:900;padding:9px 12px;cursor:pointer}
+.pokemon-body{overflow:auto;padding:14px 14px 28px}
+.pokemon-loading{color:#cbd5e1;font-size:.95rem;line-height:1.45}
+.pokemon-sprite-card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:10px;margin-bottom:12px}
+.pokemon-sprite-card img{width:96px;height:96px;object-fit:contain;background:rgba(255,255,255,.06);border-radius:16px}
+.pokemon-id-stack{display:grid;gap:6px}
+.pokemon-id-stack strong{font-size:1.05rem}
+.poke-chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.poke-chip{display:inline-grid;place-items:center;border-radius:999px;padding:5px 9px;color:white;font-size:.76rem;font-weight:900}
+.detail-section{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);border-radius:18px;padding:12px;margin-bottom:10px}
+.detail-section h3{margin:0 0 8px;font-size:.96rem;color:#fff}
+.detail-section p{margin:0;color:#dbeafe;font-size:.9rem;line-height:1.45}
+.detail-grid{display:grid;grid-template-columns:1fr;gap:7px;color:#cbd5e1;font-size:.86rem;line-height:1.35}
+.detail-grid div strong{color:#fff}
+.evo-line{display:flex;gap:6px;flex-wrap:wrap;align-items:center;color:#e5e7eb;font-size:.9rem}
+.evo-pill{display:inline-block;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);padding:6px 9px;font-weight:850}
+.evo-arrow{color:#94a3b8;font-weight:900}
+.location-list{display:grid;gap:6px;margin-top:2px}
+.location-item{padding:8px 9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px}
+.location-item strong{color:#fff}
+.location-item span{display:block;color:#cbd5e1;font-size:.8rem;margin-top:2px}
+.detail-note{color:#94a3b8!important;font-size:.8rem!important;margin-top:8px!important}
+
 @media(max-width:700px){#pokemonDrawer{width:96vw}.pokemon-sprite-card img{width:82px;height:82px}}
+
+
+/* Pokémon detail drawer hard override */
+.row button.pokemon-name{
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  border:0;
+  padding:0;
+  margin:0;
+  text-align:left;
+  color:#1f2937;
+  font:inherit;
+  cursor:pointer;
+  text-decoration:none;
+}
+.row button.pokemon-name:hover{text-decoration:underline;text-underline-offset:3px}
+.row.checked button.pokemon-name{color:#6b7280;text-decoration:line-through}
+body.pokemon-drawer-open{overflow:hidden}
+#pokemonDrawerOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:50}
+#pokemonDrawer{position:fixed;top:0;right:0;width:min(470px,95vw);height:100vh;background:#0f172a;color:white;z-index:51;transform:translateX(105%);transition:transform .22s ease;box-shadow:-16px 0 45px rgba(0,0,0,.35);display:flex;flex-direction:column}
+body.pokemon-drawer-open #pokemonDrawerOverlay{display:block}
+body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
+.pokemon-head{padding:max(18px,env(safe-area-inset-top)) 16px 12px;border-bottom:1px solid rgba(255,255,255,.12);background:linear-gradient(135deg,#1e293b,#111827)}
+.pokemon-head-row{display:flex;align-items:flex-start;gap:10px}
+.pokemon-title-wrap{flex:1}
+#pokemonDrawerTitle{margin:0;font-size:1.38rem;letter-spacing:-.03em;color:white}
+#pokemonDrawerSub{margin:5px 0 0;color:#cbd5e1;font-size:.9rem}
+.pokemon-close{border:0;border-radius:999px;background:#e5e7eb;color:#172554;font-weight:900;padding:9px 12px;cursor:pointer}
+.pokemon-body{overflow:auto;padding:14px 14px 28px}
+.pokemon-loading{color:#cbd5e1;font-size:.95rem;line-height:1.45}
+.pokemon-sprite-card{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:10px;margin-bottom:12px}
+.pokemon-sprite-card img{width:96px;height:96px;object-fit:contain;background:rgba(255,255,255,.06);border-radius:16px}
+.pokemon-id-stack{display:grid;gap:6px}
+.pokemon-id-stack strong{font-size:1.05rem}
+.poke-chip-row{display:flex;gap:6px;flex-wrap:wrap}
+.poke-chip{display:inline-grid;place-items:center;border-radius:999px;padding:5px 9px;color:white;font-size:.76rem;font-weight:900}
+.detail-section{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.055);border-radius:18px;padding:12px;margin-bottom:10px}
+.detail-section h3{margin:0 0 8px;font-size:.96rem;color:#fff}
+.detail-section p{margin:0;color:#dbeafe;font-size:.9rem;line-height:1.45}
+.detail-grid{display:grid;grid-template-columns:1fr;gap:7px;color:#cbd5e1;font-size:.86rem;line-height:1.35}
+.detail-grid div strong{color:#fff}
+.evo-line{display:flex;gap:6px;flex-wrap:wrap;align-items:center;color:#e5e7eb;font-size:.9rem}
+.evo-pill{display:inline-block;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);padding:6px 9px;font-weight:850}
+.evo-arrow{color:#94a3b8;font-weight:900}
+.location-list{display:grid;gap:6px;margin-top:2px}
+.location-item{padding:8px 9px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:12px}
+.location-item strong{color:#fff}
+.location-item span{display:block;color:#cbd5e1;font-size:.8rem;margin-top:2px}
+.detail-note{color:#94a3b8!important;font-size:.8rem!important;margin-top:8px!important}
 
 @media(max-width:700px){
   .tools{grid-template-columns:1fr}
@@ -3903,6 +4004,7 @@ var Dex = (function(){
   }
 
 
+
   function prettyName(text){
     return String(text || "").split("-").map(function(part){
       return part.charAt(0).toUpperCase() + part.slice(1);
@@ -3915,16 +4017,8 @@ var Dex = (function(){
 
   function firstEnglishFlavor(species){
     var entries = species.flavor_text_entries || [];
-    var preferred = ["scarlet","violet","sword","shield","ultra-sun","ultra-moon","sun","moon","x","y","black","white","diamond","pearl","red","blue"];
-    for(var p=0;p<preferred.length;p++){
-      for(var i=0;i<entries.length;i++){
-        if(entries[i].language && entries[i].language.name === "en" && entries[i].version && entries[i].version.name === preferred[p]){
-          return cleanFlavor(entries[i].flavor_text);
-        }
-      }
-    }
-    for(var j=0;j<entries.length;j++){
-      if(entries[j].language && entries[j].language.name === "en") return cleanFlavor(entries[j].flavor_text);
+    for(var i=0;i<entries.length;i++){
+      if(entries[i].language && entries[i].language.name === "en") return cleanFlavor(entries[i].flavor_text);
     }
     return "No Pokédex blurb found.";
   }
@@ -3934,11 +4028,8 @@ var Dex = (function(){
     function walk(node, path){
       var name = node && node.species ? prettyName(node.species.name) : "";
       var nextPath = path.concat([name]);
-      if(!node.evolves_to || node.evolves_to.length === 0){
-        paths.push(nextPath);
-      } else {
-        node.evolves_to.forEach(function(child){ walk(child, nextPath); });
-      }
+      if(!node.evolves_to || node.evolves_to.length === 0) paths.push(nextPath);
+      else node.evolves_to.forEach(function(child){ walk(child, nextPath); });
     }
     walk(chain, []);
     return paths;
@@ -3955,7 +4046,7 @@ var Dex = (function(){
 
   function formatEncounterAreas(areas){
     if(!areas || !areas.length){
-      return '<p>No standard wild encounter location found in PokéAPI for this Pokémon. It may be a starter, fossil, legendary, mythical, gift, event, or special encounter.</p>';
+      return '<p>No standard wild encounter location found in PokéAPI for this Pokémon. It may be a starter, fossil, legendary, mythical, gift, event, raid, or special encounter.</p>';
     }
     var items = [];
     for(var i=0;i<areas.length && items.length<4;i++){
@@ -3969,20 +4060,22 @@ var Dex = (function(){
     return '<div class="location-list">' + items.join("") + '</div><p class="detail-note">Encounter data is best-effort from PokéAPI and may not represent every remake, event, gift, raid, transfer, or DLC method.</p>';
   }
 
-  function openPokemon(nameEl){
-    var row = nameEl.closest(".row");
+  function openPokemon(nameButton){
+    var row = nameButton.closest(".row");
     if(!row) return false;
+
     var box = row.querySelector('input[type="checkbox"][data-num]');
     var num = box ? box.dataset.num : "";
-    var name = nameEl.textContent.trim();
+    var fallbackName = nameButton.textContent.trim();
     var regionName = row.dataset.region || "Unknown";
 
     document.body.classList.add("pokemon-drawer-open");
-    id("pokemonDrawerTitle").textContent = "#" + num + " " + name;
-    id("pokemonDrawerSub").textContent = regionName + " region";
-    id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Loading Pokédex data for ' + name + '…</p>';
+    if(id("pokemonDrawerTitle")) id("pokemonDrawerTitle").textContent = "#" + num + " " + fallbackName;
+    if(id("pokemonDrawerSub")) id("pokemonDrawerSub").textContent = regionName + " region";
+    if(id("pokemonDrawerBody")) id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Loading Pokédex data for ' + fallbackName + '…</p>';
+    status("Opening details for #" + num + " " + fallbackName + ".");
 
-    loadPokemonDetails(num, name, regionName);
+    loadPokemonDetails(num, fallbackName, regionName);
     return false;
   }
 
@@ -3992,7 +4085,12 @@ var Dex = (function(){
   }
 
   function loadPokemonDetails(num, fallbackName, regionName){
-    if(pokemonCache[num]){
+    if(!num){
+      id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Could not identify this Pokémon number.</p>';
+      return;
+    }
+
+    if(pokemonCache && pokemonCache[num]){
       renderPokemonDetails(num, fallbackName, regionName, pokemonCache[num]);
       return;
     }
@@ -4006,11 +4104,12 @@ var Dex = (function(){
       var species = results[1];
       var encounters = results[2] || [];
       return fetch(species.evolution_chain.url).then(function(r){ return r.json(); }).then(function(evo){
+        if(!pokemonCache) pokemonCache = {};
         pokemonCache[num] = {pokemon:poke, species:species, encounters:encounters, evolution:evo};
         renderPokemonDetails(num, fallbackName, regionName, pokemonCache[num]);
       });
     }).catch(function(err){
-      id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Could not load live Pokédex data. Check connection and try again.</p>';
+      if(id("pokemonDrawerBody")) id("pokemonDrawerBody").innerHTML = '<p class="pokemon-loading">Could not load live Pokédex data. Check connection and try again.</p>';
       status("Pokémon detail load failed.");
     });
   }
@@ -4024,17 +4123,13 @@ var Dex = (function(){
     var englishNameEntry = (species.names || []).filter(function(n){ return n.language && n.language.name === "en"; })[0];
     var displayName = prettyName((englishNameEntry && englishNameEntry.name) || fallbackName || poke.name);
     var types = (poke.types || []).map(function(t){ return t.type.name; });
-    var genusEntry = (species.genera || []).filter(function(g){ return g.language.name === "en"; })[0];
+    var genusEntry = (species.genera || []).filter(function(g){ return g.language && g.language.name === "en"; })[0];
     var genus = genusEntry ? genusEntry.genus : "Pokémon";
     var flavor = firstEnglishFlavor(species);
-    var gen = species.generation ? species.generation.name : "";
-    var firstGames = GEN_GAME_LABELS[gen] || prettyName(gen);
-    var starterProfessor = STARTER_PROFESSORS[num];
     var sprite = poke.sprites && (poke.sprites.front_default || (poke.sprites.other && poke.sprites.other["official-artwork"] && poke.sprites.other["official-artwork"].front_default));
     var evoPaths = flattenEvolution(evo.chain);
 
     var typeChips = types.map(function(t){ return '<span class="poke-chip type-' + t + '">' + label(t) + '</span>'; }).join("");
-    var starterText = starterProfessor ? '<div><strong>First partner note:</strong> Offered as a first partner by ' + starterProfessor + '.</div>' : '<div><strong>First partner note:</strong> Not listed as a regional first partner in this app.</div>';
 
     id("pokemonDrawerTitle").textContent = "#" + num + " " + displayName;
     id("pokemonDrawerSub").textContent = regionName + " · " + genus;
@@ -4052,9 +4147,8 @@ var Dex = (function(){
       '<section class="detail-section"><h3>Core Details</h3><div class="detail-grid">' +
         '<div><strong>Type:</strong> ' + types.map(label).join(" / ") + '</div>' +
         '<div><strong>Region group:</strong> ' + regionName + '</div>' +
-        '<div><strong>First appeared:</strong> ' + firstGames + '</div>' +
-        starterText +
-        '<div><strong>Growth / capture note:</strong> Base experience ' + (poke.base_experience || "unknown") + '; capture rate ' + (species.capture_rate != null ? species.capture_rate : "unknown") + '.</div>' +
+        '<div><strong>Base experience:</strong> ' + (poke.base_experience || "unknown") + '</div>' +
+        '<div><strong>Capture rate:</strong> ' + (species.capture_rate != null ? species.capture_rate : "unknown") + '</div>' +
       '</div></section>' +
       '<section class="detail-section"><h3>Evolution Line</h3>' + evoHtml(evoPaths) + '</section>' +
       '<section class="detail-section"><h3>Wild / Encounter Clues</h3>' + formatEncounterAreas(encounters) + '</section>';
