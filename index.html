@@ -112,7 +112,8 @@ input[type=checkbox]{width:25px;height:25px;accent-color:#16a34a;flex:0 0 auto}
 .badge-title{font-weight:900}
 .share-badge{display:none;border-radius:999px;padding:7px 10px;background:#e5e7eb;color:#172554;font-weight:900}
 
-#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;background:#111827;color:white;border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 18px 45px rgba(0,0,0,.35);padding:13px 15px;max-width:min(420px,92vw);font-weight:850}
+#toast{display:none;position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#111827;color:white;border:1px solid rgba(255,255,255,.14);border-radius:18px;box-shadow:0 18px 45px rgba(0,0,0,.35);padding:13px 15px;max-width:min(420px,92vw);font-weight:850}
+#toast.show{display:block}
 #toast small{display:block;color:#cbd5e1;font-weight:700;margin-top:3px}
 
 .type-normal{background:#9ca3af}.type-fire{background:#ef4444}.type-water{background:#3b82f6}.type-electric{background:#eab308}.type-grass{background:#22c55e}.type-ice{background:#38bdf8}.type-fighting{background:#b91c1c}.type-poison{background:#a855f7}.type-ground{background:#b45309}.type-flying{background:#60a5fa}.type-psychic{background:#ec4899}.type-bug{background:#65a30d}.type-rock{background:#78716c}.type-ghost{background:#6d28d9}.type-dragon{background:#4338ca}.type-dark{background:#1f2937}.type-steel{background:#64748b}.type-fairy{background:#f472b6}
@@ -178,7 +179,51 @@ body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 .location-item span{display:block;color:#cbd5e1;font-size:.8rem;margin-top:2px}
 .detail-note{color:#94a3b8!important;font-size:.8rem!important;margin-top:8px!important}
 .live-status{color:#cbd5e1;font-size:.86rem;line-height:1.35;margin-top:8px!important}
+
+/* Final Pokémon drawer repair */
+.row button.pokemon-name{
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  border:0;
+  padding:0;
+  margin:0;
+  text-align:left;
+  color:#1f2937;
+  font:inherit;
+  cursor:pointer;
+}
+.row button.pokemon-name:hover{text-decoration:underline;text-underline-offset:3px}
+.row.checked button.pokemon-name{color:#6b7280;text-decoration:line-through}
+body.pokemon-drawer-open{overflow:hidden}
+#pokemonDrawerOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:50}
+#pokemonDrawer{position:fixed;top:0;right:0;width:min(470px,95vw);height:100vh;background:#0f172a;color:white;z-index:51;transform:translateX(105%);transition:transform .22s ease;box-shadow:-16px 0 45px rgba(0,0,0,.35);display:flex;flex-direction:column}
+body.pokemon-drawer-open #pokemonDrawerOverlay{display:block}
+body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
+
 @media(max-width:700px){#pokemonDrawer{width:96vw}.pokemon-sprite-card img,.placeholder-sprite{width:82px;height:82px}}
+
+
+/* Final Pokémon drawer repair */
+.row button.pokemon-name{
+  appearance:none;
+  -webkit-appearance:none;
+  background:transparent;
+  border:0;
+  padding:0;
+  margin:0;
+  text-align:left;
+  color:#1f2937;
+  font:inherit;
+  cursor:pointer;
+}
+.row button.pokemon-name:hover{text-decoration:underline;text-underline-offset:3px}
+.row.checked button.pokemon-name{color:#6b7280;text-decoration:line-through}
+body.pokemon-drawer-open{overflow:hidden}
+#pokemonDrawerOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:50}
+#pokemonDrawer{position:fixed;top:0;right:0;width:min(470px,95vw);height:100vh;background:#0f172a;color:white;z-index:51;transform:translateX(105%);transition:transform .22s ease;box-shadow:-16px 0 45px rgba(0,0,0,.35);display:flex;flex-direction:column}
+body.pokemon-drawer-open #pokemonDrawerOverlay{display:block}
+body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 
 @media(max-width:700px){
   .tools{grid-template-columns:1fr}
@@ -3667,7 +3712,24 @@ body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
     </div>
   </div>
 </aside>
-<div id="toast">Achievement test mode active<small>All type badges are visually simulated as unlocked.</small></div>
+
+<div id="pokemonDrawerOverlay" aria-hidden="true" onclick="Dex.closePokemon()"></div>
+<aside id="pokemonDrawer" aria-label="Pokémon detail card">
+  <div class="pokemon-head">
+    <div class="pokemon-head-row">
+      <div class="pokemon-title-wrap">
+        <h2 id="pokemonDrawerTitle">Pokémon Details</h2>
+        <p id="pokemonDrawerSub">Tap a Pokémon name to open its card.</p>
+      </div>
+      <button class="pokemon-close" type="button" onclick="Dex.closePokemon()">Close</button>
+    </div>
+  </div>
+  <div class="pokemon-body" id="pokemonDrawerBody">
+    <p class="pokemon-loading">Choose a Pokémon from the checklist.</p>
+  </div>
+</aside>
+
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 var Dex = (function(){
@@ -3929,6 +3991,17 @@ var Dex = (function(){
     var regionName = row.dataset.region || "Unknown";
 
     activePokemonCard = { num:num, name:name, region:regionName };
+
+    var title = id("pokemonDrawerTitle");
+    var sub = id("pokemonDrawerSub");
+    var body = id("pokemonDrawerBody");
+
+    if(!title || !sub || !body){
+      status("Pokémon drawer markup missing. Re-upload the repaired build.");
+      alert("Pokémon drawer markup is missing from this HTML file. Upload the repaired build.");
+      return false;
+    }
+
     document.body.classList.add("pokemon-drawer-open");
     renderLocalPokemonCard(num, name, regionName);
     status("Opened local card for #" + num + " " + name + ".");
