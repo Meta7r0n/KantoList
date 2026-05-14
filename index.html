@@ -20,7 +20,7 @@ h1{margin:0;font-size:1.45rem;letter-spacing:-.035em}
 #bar{height:100%;width:0;background:linear-gradient(90deg,#ffcb05,#fff3a4);transition:width .18s ease}
 
 .tools{display:grid;grid-template-columns:1fr auto auto auto auto;gap:8px;margin-bottom:10px}
-.fake-search{border:0;border-radius:999px;padding:11px 14px;font-size:16px;outline:none;background:white;color:#9ca3af}
+.fake-search,#search{border:0;border-radius:999px;padding:11px 14px;font-size:16px;outline:none;background:white;color:#9ca3af}
 .tool-label,button{font:inherit}
 .tool-label,.reset-btn{display:grid;place-items:center;border:0;border-radius:999px;background:#ffcb05;color:#172554;font-weight:900;padding:10px 13px;min-height:42px;cursor:pointer;text-align:center;text-decoration:none}
 .test-btn{background:#fb923c;color:#431407}
@@ -180,50 +180,8 @@ body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 .detail-note{color:#94a3b8!important;font-size:.8rem!important;margin-top:8px!important}
 .live-status{color:#cbd5e1;font-size:.86rem;line-height:1.35;margin-top:8px!important}
 
-/* Final Pokémon drawer repair */
-.row button.pokemon-name{
-  appearance:none;
-  -webkit-appearance:none;
-  background:transparent;
-  border:0;
-  padding:0;
-  margin:0;
-  text-align:left;
-  color:#1f2937;
-  font:inherit;
-  cursor:pointer;
-}
-.row button.pokemon-name:hover{text-decoration:underline;text-underline-offset:3px}
-.row.checked button.pokemon-name{color:#6b7280;text-decoration:line-through}
-body.pokemon-drawer-open{overflow:hidden}
-#pokemonDrawerOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:50}
-#pokemonDrawer{position:fixed;top:0;right:0;width:min(470px,95vw);height:100vh;background:#0f172a;color:white;z-index:51;transform:translateX(105%);transition:transform .22s ease;box-shadow:-16px 0 45px rgba(0,0,0,.35);display:flex;flex-direction:column}
-body.pokemon-drawer-open #pokemonDrawerOverlay{display:block}
-body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 
 @media(max-width:700px){#pokemonDrawer{width:96vw}.pokemon-sprite-card img,.placeholder-sprite{width:82px;height:82px}}
-
-
-/* Final Pokémon drawer repair */
-.row button.pokemon-name{
-  appearance:none;
-  -webkit-appearance:none;
-  background:transparent;
-  border:0;
-  padding:0;
-  margin:0;
-  text-align:left;
-  color:#1f2937;
-  font:inherit;
-  cursor:pointer;
-}
-.row button.pokemon-name:hover{text-decoration:underline;text-underline-offset:3px}
-.row.checked button.pokemon-name{color:#6b7280;text-decoration:line-through}
-body.pokemon-drawer-open{overflow:hidden}
-#pokemonDrawerOverlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,.52);z-index:50}
-#pokemonDrawer{position:fixed;top:0;right:0;width:min(470px,95vw);height:100vh;background:#0f172a;color:white;z-index:51;transform:translateX(105%);transition:transform .22s ease;box-shadow:-16px 0 45px rgba(0,0,0,.35);display:flex;flex-direction:column}
-body.pokemon-drawer-open #pokemonDrawerOverlay{display:block}
-body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 
 @media(max-width:700px){
   .tools{grid-template-columns:1fr}
@@ -237,17 +195,17 @@ body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 </style>
 </head>
 <body>
-<input class="region-radio" type="radio" name="region" id="region-All" value="All" checked>
-<input class="region-radio" type="radio" name="region" id="region-Kanto" value="Kanto">
-<input class="region-radio" type="radio" name="region" id="region-Johto" value="Johto">
-<input class="region-radio" type="radio" name="region" id="region-Hoenn" value="Hoenn">
-<input class="region-radio" type="radio" name="region" id="region-Sinnoh" value="Sinnoh">
-<input class="region-radio" type="radio" name="region" id="region-Unova" value="Unova">
-<input class="region-radio" type="radio" name="region" id="region-Kalos" value="Kalos">
-<input class="region-radio" type="radio" name="region" id="region-Alola" value="Alola">
-<input class="region-radio" type="radio" name="region" id="region-Galar" value="Galar">
-<input class="region-radio" type="radio" name="region" id="region-Hisui" value="Hisui">
-<input class="region-radio" type="radio" name="region" id="region-Paldea" value="Paldea">
+<input class="region-radio" type="radio" name="region" id="region-All" value="All" checked onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Kanto" value="Kanto" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Johto" value="Johto" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Hoenn" value="Hoenn" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Sinnoh" value="Sinnoh" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Unova" value="Unova" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Kalos" value="Kalos" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Alola" value="Alola" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Galar" value="Galar" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Hisui" value="Hisui" onchange="Dex.regionChanged()">
+<input class="region-radio" type="radio" name="region" id="region-Paldea" value="Paldea" onchange="Dex.regionChanged()">
 
 <input id="drawerToggle" type="checkbox">
 <header>
@@ -256,7 +214,7 @@ body.pokemon-drawer-open #pokemonDrawer{transform:translateX(0)}
 <p class="sub">Stable JavaScript build for GitHub Pages / Safari.</p>
 <p class="dev-note">Dev build: test buttons are temporary. JavaScript should run on GitHub Pages / Safari.</p>
 <div class="meter">
-  <div class="meter-top"><span>All Regions</span><span id="count">0 / 1025</span></div>
+  <div class="meter-top"><span id="scopeLabel">All Regions</span><span id="count">0 / 1025</span></div>
   <div class="progress"><div id="bar"></div></div>
 </div>
 <div class="tools">
@@ -3763,6 +3721,20 @@ var Dex = (function(){
     });
   }
 
+  function setupRowTaps(){
+    rows().forEach(function(row){
+      if(row.dataset.tapReady === "yes") return;
+      row.dataset.tapReady = "yes";
+      row.addEventListener("click", function(event){
+        if(event.target.closest("button") || event.target.closest("input")) return;
+        var box = row.querySelector('input[type="checkbox"][data-num]');
+        if(!box) return;
+        box.checked = !box.checked;
+        changed(box);
+      });
+    });
+  }
+
   function save(){
     var nums = boxes().filter(function(b){ return b.checked; }).map(function(b){ return b.dataset.num; }).sort();
     write(CHECKLIST_KEY, nums);
@@ -3778,10 +3750,12 @@ var Dex = (function(){
   }
 
   function progress(){
+    var currentRegion = region();
     var scope = scoped();
     var done = scope.filter(function(b){ return b.checked; }).length;
     var total = scope.length;
     var pct = total ? Math.round(done / total * 100) : 0;
+    if(id("scopeLabel")) id("scopeLabel").textContent = currentRegion === "All" ? "All Regions" : currentRegion;
     if(id("count")) id("count").textContent = done + " / " + total;
     if(id("bar")) id("bar").style.width = pct + "%";
   }
@@ -4200,6 +4174,7 @@ var Dex = (function(){
     earned = read(EARNED_KEY, []);
     var saved = read(CHECKLIST_KEY, []);
     boxes().forEach(function(b){ b.checked = saved.indexOf(b.dataset.num) !== -1; });
+    setupRowTaps();
     sync();
     search();
     progress();
