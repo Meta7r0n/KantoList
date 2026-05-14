@@ -1,20 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang='en'>
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ef4444">
+<meta charset='utf-8'>
+<meta name='viewport' content='width=device-width,initial-scale=1,viewport-fit=cover'>
+<meta name='theme-color' content='#ef4444'>
 <title>National Pokédex Sort Build</title>
 <style>
 html,body{margin:0;width:100%;height:100%;background:#0f172a;overflow:hidden}
 #app{border:0;width:100%;height:100vh;display:block;background:#f7f7fb}
-.load{position:fixed;inset:0;display:grid;place-items:center;color:white;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:linear-gradient(135deg,#ef4444,#2563eb,#7c3aed);z-index:10;text-align:center;padding:20px}
+.load{position:fixed;inset:0;display:grid;place-items:center;color:white;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#ef4444,#2563eb,#7c3aed);z-index:10;text-align:center;padding:20px}
 .ball{width:72px;height:72px;margin:0 auto 14px;border-radius:50%;background:linear-gradient(#ef4444 0 48%,#111827 49% 52%,#fff 53%);box-shadow:0 20px 50px rgba(0,0,0,.35)}
 </style>
 </head>
 <body>
-<div class="load" id="load"><div><div class="ball"></div><h1>Loading Pokédex Sort Build…</h1><p>Restoring sort controls on the deployed app.</p></div></div>
-<iframe id="app" title="National Pokédex Checklist"></iframe>
+<div class='load' id='load'><div><div class='ball'></div><h1>Loading Pokédex Sort Build…</h1><p>Restoring sort controls on the deployed app.</p></div></div>
+<iframe id='app' title='National Pokédex Checklist'></iframe>
 <script>
 (function(){
 var BASE='https://raw.githubusercontent.com/Meta7r0n/KantoList/main/index.html';
@@ -37,12 +37,15 @@ function pretty(t){return String(t||'').split('-').map(function(p){return p.char
 function category(m){if(!m)return 'common';if(m.is_mythical)return 'mythical';if(m.is_legendary)return 'legendary';if(m.capture_rate!=null&&m.capture_rate<=45)return 'uncommon';return 'common'}
 function catLabel(c){return c==='mythical'?'Mythical':c==='legendary'?'Legendary':c==='uncommon'?'Uncommon':'Common'}
 function scoped(){var rg=region();return rows().filter(function(r){return rg==='All'||r.dataset.region===rg})}
+function setHeaderCollapsed(on){doc.body.classList.toggle('header-collapsed',!!on);var b=id('headerCollapseBtn');if(b){b.textContent=on?'Show Menu ▼':'Collapse Menu ▲';b.setAttribute('aria-expanded',String(!on))}try{localStorage.setItem('nationalDexHeaderCollapsed.v0.3',on?'1':'0')}catch(e){}}
+function setupCollapse(){var h=doc.querySelector('header .wrap')||doc.querySelector('header');if(!h||id('headerCollapseBtn'))return;h.insertAdjacentHTML('afterbegin','<div class="header-collapse-row"><button id="headerCollapseBtn" type="button" aria-expanded="true">Collapse Menu ▲</button></div>');id('headerCollapseBtn').addEventListener('click',function(){setHeaderCollapsed(!doc.body.classList.contains('header-collapsed'))});try{setHeaderCollapsed(localStorage.getItem('nationalDexHeaderCollapsed.v0.3')==='1')}catch(e){setHeaderCollapsed(false)}}
 function inject(){
  var style=doc.createElement('style');
- style.textContent='.sort-tools{display:grid;grid-template-columns:auto minmax(190px,1fr) auto auto;gap:8px;align-items:center;margin:0 0 10px}.sort-label{font-weight:950;color:white;font-size:.88rem;white-space:nowrap}#sortMode{border:0;border-radius:999px;padding:11px 14px;font-size:16px;outline:none;background:white;color:#111827;font-weight:800;min-height:42px;width:100%}#sortDataBtn,#resetSortBtn{display:grid;place-items:center;border:0;border-radius:999px;background:#e5e7eb;color:#111827;font-weight:900;padding:10px 13px;min-height:42px;cursor:pointer;text-align:center;text-decoration:none}#sortDataBtn{background:#a7f3d0;color:#064e3b}#sortDataBtn[disabled],#resetSortBtn[disabled]{opacity:.62;cursor:not-allowed}.sort-status{font-size:.78rem;font-weight:850;color:#fff3a4;min-height:16px;margin:-3px 0 8px}#sortedSection{display:none}body.sorted-mode main .region-section:not(#sortedSection){display:none!important}body.sorted-mode #sortedSection{display:block!important}.sort-chip{flex:0 0 auto;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:950;font-size:.72rem;padding:5px 8px;white-space:nowrap}.sort-chip.pending{background:#fef3c7;color:#92400e}.sort-chip.mythical{background:#ede9fe;color:#5b21b6}.sort-chip.legendary{background:#dbeafe;color:#1d4ed8}.sort-chip.uncommon{background:#fef3c7;color:#92400e}.sort-chip.common{background:#dcfce7;color:#166534}.sort-chip.community{background:#ffe4e6;color:#9f1239}.sort-chip.color{background:#f3f4f6;color:#374151}.sort-chip.type{background:#e0f2fe;color:#075985}@media(max-width:700px){.sort-tools{grid-template-columns:1fr}.sort-label{display:none}#sortDataBtn,#resetSortBtn{width:100%}}';
+ style.textContent='.header-collapse-row{display:flex;justify-content:flex-end;margin:0 0 7px}#headerCollapseBtn{border:0;border-radius:999px;background:rgba(255,255,255,.92);color:#172554;font:inherit;font-size:.82rem;font-weight:950;padding:8px 11px;min-height:36px;box-shadow:0 6px 15px rgba(0,0,0,.16)}body.header-collapsed header{padding-bottom:8px!important}body.header-collapsed header .sub,body.header-collapsed header .dev-note,body.header-collapsed header .meter,body.header-collapsed header .tools,body.header-collapsed header .sort-tools,body.header-collapsed header .sort-status,body.header-collapsed header .tabs{display:none!important}body.header-collapsed header h1{font-size:1.05rem!important;line-height:1.1!important;margin:0!important}.sort-tools{display:grid;grid-template-columns:auto minmax(190px,1fr) auto auto;gap:8px;align-items:center;margin:0 0 10px}.sort-label{font-weight:950;color:white;font-size:.88rem;white-space:nowrap}#sortMode{border:0;border-radius:999px;padding:11px 14px;font-size:16px;outline:none;background:white;color:#111827;font-weight:800;min-height:42px;width:100%}#sortDataBtn,#resetSortBtn{display:grid;place-items:center;border:0;border-radius:999px;background:#e5e7eb;color:#111827;font-weight:900;padding:10px 13px;min-height:42px;cursor:pointer;text-align:center;text-decoration:none}#sortDataBtn{background:#a7f3d0;color:#064e3b}#sortDataBtn[disabled],#resetSortBtn[disabled]{opacity:.62;cursor:not-allowed}.sort-status{font-size:.78rem;font-weight:850;color:#fff3a4;min-height:16px;margin:-3px 0 8px}#sortedSection{display:none}body.sorted-mode main .region-section:not(#sortedSection){display:none!important}body.sorted-mode #sortedSection{display:block!important}.sort-chip{flex:0 0 auto;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:950;font-size:.72rem;padding:5px 8px;white-space:nowrap}.sort-chip.pending{background:#fef3c7;color:#92400e}.sort-chip.mythical{background:#ede9fe;color:#5b21b6}.sort-chip.legendary{background:#dbeafe;color:#1d4ed8}.sort-chip.uncommon{background:#fef3c7;color:#92400e}.sort-chip.common{background:#dcfce7;color:#166534}.sort-chip.community{background:#ffe4e6;color:#9f1239}.sort-chip.color{background:#f3f4f6;color:#374151}.sort-chip.type{background:#e0f2fe;color:#075985}@media(max-width:700px){.sort-tools{grid-template-columns:1fr}.sort-label{display:none}#sortDataBtn,#resetSortBtn{width:100%}.header-collapse-row{margin-bottom:5px}#headerCollapseBtn{font-size:.78rem;padding:7px 10px}}';
  doc.head.appendChild(style);
+ setupCollapse();
  var tools=doc.querySelector('.tools');
- if(tools&&!id('sortMode'))tools.insertAdjacentHTML('afterend','<div class="sort-tools" aria-label="Sort controls"><span class="sort-label">Sort</span><select id="sortMode"><option value="dex">Pokédex Entry #</option><option value="type">Primary Type</option><option value="status">Common / Uncommon / Legendary / Mythical</option><option value="color">Primary Color</option><option value="community">Community Picks beta</option></select><button id="sortDataBtn" type="button">Load Sort Data</button><button id="resetSortBtn" type="button">Reset Order</button></div><div class="sort-status" id="sortStatus">Sort build restored. Tap Load Sort Data for type/color/status sorting.</div>');
+ if(tools&&!id('sortMode'))tools.insertAdjacentHTML('afterend','<div class="sort-tools" aria-label="Sort controls"><span class="sort-label">Sort</span><select id="sortMode"><option value="dex">Pokédex Entry #</option><option value="type">Primary Type</option><option value="status">Common / Uncommon / Legendary / Mythical</option><option value="color">Primary Color</option><option value="community">Community Picks beta</option></select><button id="sortDataBtn" type="button">Load Sort Data</button><button id="resetSortBtn" type="button">Reset Order</button></div><div class="sort-status" id="sortStatus">Sort build restored. Header can now collapse.</div>');
  var form=id('dexForm');
  if(form&&!id('sortedSection'))form.insertAdjacentHTML('afterbegin','<section id="sortedSection" class="region-section" data-region="Sorted"><h2 id="sortedTitle">Sorted View <span>Sorting active</span></h2><div class="list" id="sortedList"></div></section>');
  rows().forEach(function(r){orig[num(r)]={p:r.parentNode}});
@@ -50,7 +53,7 @@ function inject(){
  id('sortDataBtn').addEventListener('click',load);
  id('resetSortBtn').addEventListener('click',reset);
  all('input[name="region"]').forEach(function(r){r.addEventListener('change',function(){setTimeout(function(){if(id('sortMode').value!=='dex')sort()},0)})});
- st('Sort build restored. Choose a sort mode or tap Load Sort Data.');
+ st('Sort build restored. Use Collapse Menu to free screen space.');
 }
 function restore(){rows().sort(function(a,b){return parseInt(num(a),10)-parseInt(num(b),10)}).forEach(function(r){var o=orig[num(r)];if(o&&o.p)o.p.appendChild(r)});if(id('sortedList'))id('sortedList').innerHTML='';doc.body.classList.remove('sorted-mode');all('.sort-chip').forEach(function(c){c.remove()})}
 function chip(r,t,c){all('.sort-chip',r).forEach(function(x){x.remove()});var s=doc.createElement('span');s.className='sort-chip '+(c||'');s.textContent=t;r.appendChild(s)}
