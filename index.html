@@ -10,25 +10,29 @@ html,body{margin:0;width:100%;height:100%;background:#0f172a;color:white;font-fa
 </style>
 </head>
 <body>
-<div class="boot"><div><div class="ball"></div><h1>Loading Pokédex Stats Dashboard…</h1><p>V0.5.0: collection stats dashboard + stable backup tools.</p></div></div>
+<div class="boot"><div><div class="ball"></div><h1>Loading Pokédex Stats Dashboard…</h1><p>V0.5.1: restored collapsible menu + stats dashboard.</p></div></div>
 <script>
 (function(){
 var SRC='https://raw.githubusercontent.com/Meta7r0n/KantoList/stable-v0.4.3/index.html';
 function statsPatch(){return `
 function injectStats(){
   if(!doc || !doc.head) return;
-  if(!doc.getElementById('statsV050Style')){
+  if(!doc.getElementById('statsV051Style')){
     var css=doc.createElement('style');
-    css.id='statsV050Style';
-    css.textContent='.stats-panel{margin:0 0 9px;padding:10px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(15,23,42,.28);box-shadow:0 8px 22px rgba(0,0,0,.12)}.stats-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.stats-head strong{font-size:.92rem}.stats-head button{border:0;border-radius:999px;background:#e5e7eb;color:#172554;font-weight:950;padding:8px 10px;cursor:pointer}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stat-card{border:1px solid rgba(255,255,255,.13);border-radius:15px;background:rgba(255,255,255,.09);padding:9px;min-height:70px}.stat-label{font-size:.72rem;color:#dbeafe;font-weight:850;line-height:1.15}.stat-value{font-size:1.2rem;font-weight:1000;letter-spacing:-.035em;margin-top:4px;color:#fff}.stat-sub{font-size:.7rem;color:#cbd5e1;font-weight:750;margin-top:2px;line-height:1.2}.stat-bar{height:8px;background:rgba(0,0,0,.25);border-radius:999px;overflow:hidden;margin-top:7px}.stat-fill{height:100%;background:#ffcb05;border-radius:999px}.stat-section-title{font-size:.76rem;font-weight:950;color:#fff3a4;margin:10px 0 6px}.stat-bars{display:grid;gap:6px}.stat-row{display:grid;grid-template-columns:76px 1fr 54px;gap:7px;align-items:center;font-size:.73rem;font-weight:850;color:#e5e7eb}.stat-row .stat-bar{margin-top:0}.stat-note{font-size:.72rem;color:#cbd5e1;line-height:1.25;margin:8px 0 0}body.header-collapsed header .stats-panel{display:none!important}@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}.stat-row{grid-template-columns:70px 1fr 48px}.stats-panel{padding:9px}}';
+    css.id='statsV051Style';
+    css.textContent='.header-collapse-row{display:flex!important;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}.v050-menu-toggle{border:1px solid rgba(255,255,255,.24);border-radius:999px;background:#ffcb05;color:#172554;font-weight:950;padding:7px 10px;cursor:pointer;font-size:.75rem;white-space:nowrap}.stats-panel{margin:0 0 9px;padding:10px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(15,23,42,.28);box-shadow:0 8px 22px rgba(0,0,0,.12)}.stats-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.stats-head strong{font-size:.92rem}.stats-head-actions{display:flex;gap:6px;align-items:center}.stats-head button{border:0;border-radius:999px;background:#e5e7eb;color:#172554;font-weight:950;padding:8px 10px;cursor:pointer}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.stat-card{border:1px solid rgba(255,255,255,.13);border-radius:15px;background:rgba(255,255,255,.09);padding:9px;min-height:70px}.stat-label{font-size:.72rem;color:#dbeafe;font-weight:850;line-height:1.15}.stat-value{font-size:1.2rem;font-weight:1000;letter-spacing:-.035em;margin-top:4px;color:#fff}.stat-sub{font-size:.7rem;color:#cbd5e1;font-weight:750;margin-top:2px;line-height:1.2}.stat-bar{height:8px;background:rgba(0,0,0,.25);border-radius:999px;overflow:hidden;margin-top:7px}.stat-fill{height:100%;background:#ffcb05;border-radius:999px}.stat-section-title{font-size:.76rem;font-weight:950;color:#fff3a4;margin:10px 0 6px}.stat-bars{display:grid;gap:6px}.stat-row{display:grid;grid-template-columns:76px 1fr 54px;gap:7px;align-items:center;font-size:.73rem;font-weight:850;color:#e5e7eb}.stat-row .stat-bar{margin-top:0}.stat-note{font-size:.72rem;color:#cbd5e1;line-height:1.25;margin:8px 0 0}body.header-collapsed header .sub,body.header-collapsed header .dev-note,body.header-collapsed header .meter,body.header-collapsed header .tools,body.header-collapsed header .tabs,body.header-collapsed header .sort-tools,body.header-collapsed header .sort-status,body.header-collapsed header .filter-tools,body.header-collapsed header .backup-tools,body.header-collapsed header .filter-status,body.header-collapsed header .stats-panel{display:none!important}body.header-collapsed header{padding-bottom:8px!important}body.stats-mini .stats-grid,body.stats-mini #regionStats,body.stats-mini #typeStats,body.stats-mini .stat-section-title,body.stats-mini #statsNote{display:none!important}body.stats-mini .stats-panel{padding:9px 10px}.quick-scroll-btn{position:fixed;right:12px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:45;border:0;border-radius:999px;background:#ffcb05;color:#172554;font-weight:950;padding:10px 12px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:none;cursor:pointer}body.show-top-btn .quick-scroll-btn{display:block}@media(max-width:700px){.stats-grid{grid-template-columns:repeat(2,1fr)}.stat-row{grid-template-columns:70px 1fr 48px}.stats-panel{padding:9px}.stats-head{align-items:flex-start}.stats-head-actions{flex-direction:column;align-items:flex-end}.v050-menu-toggle{font-size:.72rem;padding:7px 9px}}';
     doc.head.appendChild(css);
   }
+  ensureHeaderCollapse();
   var anchor=$('filterStatus')||$('statusLine')||doc.querySelector('header .wrap')||doc.querySelector('header');
   if(anchor && !$('statsPanel')){
-    anchor.insertAdjacentHTML('afterend','<section class="stats-panel" id="statsPanel" aria-label="Collection stats dashboard"><div class="stats-head"><strong>Collection Stats Dashboard</strong><button type="button" id="refreshStatsBtn">Refresh Stats</button></div><div class="stats-grid" id="statsGrid"></div><div class="stat-section-title">Region Progress</div><div class="stat-bars" id="regionStats"></div><div class="stat-section-title">Primary Type Snapshot</div><div class="stat-bars" id="typeStats"></div><p class="stat-note" id="statsNote">Stats update from your checked boxes. Rarity/type stats become more accurate after Load All App Data.</p></section>');
+    anchor.insertAdjacentHTML('afterend','<section class="stats-panel" id="statsPanel" aria-label="Collection stats dashboard"><div class="stats-head"><strong>Collection Stats Dashboard</strong><div class="stats-head-actions"><button type="button" id="toggleStatsMiniBtn">Mini Stats</button><button type="button" id="refreshStatsBtn">Refresh Stats</button></div></div><div class="stats-grid" id="statsGrid"></div><div class="stat-section-title">Region Progress</div><div class="stat-bars" id="regionStats"></div><div class="stat-section-title">Primary Type Snapshot</div><div class="stat-bars" id="typeStats"></div><p class="stat-note" id="statsNote">Stats update from your checked boxes. Rarity/type stats become more accurate after Load All App Data.</p></section>');
   }
   var btn=$('refreshStatsBtn');
   if(btn && !btn._wired){btn.addEventListener('click',renderStats);btn._wired=true;}
+  var mini=$('toggleStatsMiniBtn');
+  if(mini && !mini._wired){mini.addEventListener('click',function(){doc.body.classList.toggle('stats-mini');mini.textContent=doc.body.classList.contains('stats-mini')?'Full Stats':'Mini Stats';});mini._wired=true;}
+  ensureQuickTop();
   if(win.Dex && !win.Dex._v050ResetStats){
     var prev=win.Dex.clearAll;
     win.Dex.clearAll=function(){var out=prev.apply(win.Dex,arguments);setTimeout(function(){try{apply();renderStats();}catch(e){}},120);return out};
@@ -40,6 +44,21 @@ function injectStats(){
     injectStats._wrappedApply=true;
   }
   renderStats();
+}
+function ensureHeaderCollapse(){
+  var hd=doc.querySelector('header .wrap')||doc.querySelector('header');
+  if(!hd) return;
+  var row=doc.querySelector('.header-collapse-row');
+  if(!row){hd.insertAdjacentHTML('afterbegin','<div class="header-collapse-row"></div>');row=doc.querySelector('.header-collapse-row');}
+  if(row && !$('v050MenuToggle')) row.insertAdjacentHTML('beforeend','<button type="button" class="v050-menu-toggle" id="v050MenuToggle">Collapse Menu</button>');
+  var btn=$('v050MenuToggle');
+  if(btn && !btn._wired){btn.addEventListener('click',function(){doc.body.classList.toggle('header-collapsed');btn.textContent=doc.body.classList.contains('header-collapsed')?'Expand Menu':'Collapse Menu';try{win.scrollTo({top:0,behavior:'smooth'});}catch(e){win.scrollTo(0,0);}});btn._wired=true;}
+}
+function ensureQuickTop(){
+  if(!$('quickTopBtn')) doc.body.insertAdjacentHTML('beforeend','<button type="button" class="quick-scroll-btn" id="quickTopBtn">Top</button>');
+  var btn=$('quickTopBtn');
+  if(btn && !btn._wired){btn.addEventListener('click',function(){try{win.scrollTo({top:0,behavior:'smooth'});}catch(e){win.scrollTo(0,0);}});btn._wired=true;}
+  if(!ensureQuickTop._wired){win.addEventListener('scroll',function(){doc.body.classList.toggle('show-top-btn',(win.scrollY||doc.documentElement.scrollTop||0)>550);},{passive:true});ensureQuickTop._wired=true;}
 }
 function statPct(done,total){return total?Math.round(done/total*100):0;}
 function statChecked(list){return list.filter(function(r){var b=box(r);return b&&b.checked}).length;}
@@ -68,14 +87,14 @@ function renderStats(){
   if(note)note.textContent=typeKnown?('Stats ready. Primary type snapshot has '+typeKnown+' loaded Pokémon. Encounter clues still load per card.'):('Core stats are ready. Tap Load All App Data for rarity and type breakdowns.');
 }
 `;}
-function fail(msg){document.body.innerHTML='<div class="boot"><div><div class="ball"></div><h1>V0.5.0 load failed</h1><p>'+String(msg||'Unknown error')+'</p></div></div>';}
+function fail(msg){document.body.innerHTML='<div class="boot"><div><div class="ball"></div><h1>V0.5.1 load failed</h1><p>'+String(msg||'Unknown error')+'</p></div></div>';}
 fetch(SRC+'?v='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error('Could not load stable-v0.4.3');return r.text();}).then(function(html){
   html=html.replace('National Pokédex Clean Backup Build','National Pokédex Stats Dashboard Build')
            .replace('Loading Pokédex Clean Build…','Loading Pokédex Stats Dashboard…')
-           .replace('V0.4.3: cleanup, safer reset, export/import backups.','V0.5.0: collection stats dashboard + stable backup tools.')
-           .replace('BUILD="V0.4.3-BACKUP"','BUILD="V0.5.0-STATS"')
+           .replace('V0.4.3: cleanup, safer reset, export/import backups.','V0.5.1: restored collapsible menu + stats dashboard.')
+           .replace('BUILD="V0.4.3-BACKUP"','BUILD="V0.5.1-STATS-COLLAPSE"')
            .replace('hook();protectReset();apply();','hook();protectReset();'+statsPatch()+'injectStats();apply();');
-  if(html.indexOf('V0.5.0-STATS')===-1 || html.indexOf('injectStats')===-1) throw new Error('Patch markers were not found.');
+  if(html.indexOf('V0.5.1-STATS-COLLAPSE')===-1 || html.indexOf('ensureHeaderCollapse')===-1) throw new Error('Patch markers were not found.');
   document.open();document.write(html);document.close();
 }).catch(function(e){fail(e.message||e);});
 })();
